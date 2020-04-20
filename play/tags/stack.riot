@@ -1,0 +1,34 @@
+<stack class="m-0 p-0 text-nowrap" style="width: { (((width - offset) * cards.length) + offset) }px;">
+    <card each="{ (card,index) in cards }" hide="{ false }" width="{ width }" height="{ height }"
+          offset="{ -offset * index }" rotate="{ rotate[index] }"
+          card="{ card }" hoverable="{ true }" focusable="{ false }" disabled="{ false }"/>
+
+    <script>
+        export default {
+            rotate: [-10,-5,5,10],
+            cards: [],
+            width: 0,
+            height: 0,
+            offset: 0,
+            onBeforeActions(){
+                this.cards = [];
+
+                let i = this.props.cards.length < 4 ? 0 : (this.props.cards.length - 4);
+                for(; i < this.props.cards.length; i++) {
+                    this.cards.push(this.props.cards[i]);
+                }
+
+                let parent = document.getElementById(this.props.parent);
+                this.height = parent.clientHeight * this.props.hratio;
+                this.width = this.height * this.props.wratio;
+                this.offset = this.width / 2;
+            },
+            onBeforeMount(){
+                this.onBeforeActions();
+            },
+            onBeforeUpdate(){
+                this.onBeforeActions();
+            }
+        }
+    </script>
+</stack>

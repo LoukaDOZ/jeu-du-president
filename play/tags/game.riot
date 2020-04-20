@@ -1,0 +1,241 @@
+<game>
+    <home if="{ !game }" required="{ required }" create="{ create }" join="{ join }"/>
+
+    <lobby if="{ game && game.state === WAIT_TO_START }" game="{ game }" pid="{ pid }" start="{ start }"/>
+
+    <play if="{ game && game.state === PLAY }" game="{ game }" pid="{ pid }" selected="{ selected }"
+          put="{ put }" fold="{ fold }" pass="{ pass }" revolution="{ revolution }"
+          onselect="{ onSelect }" ondeselect="{ onDeselect }"/>
+
+    <rank if="{ game && game.state === FINISHED }" game="{ game }" pid="{ pid }" next="{ next }"/>
+
+    <exchange if="{ game && game.state === EXCHANGE }" game="{ game }" pid="{ pid }" selected="{ selected }"
+              give="{ give }" next="{ next }" onselect="{ onSelect }" ondeselect="{ onDeselect }"/>
+
+    <script>
+        export default {
+            game: null,
+            pid: 0,
+            required: false,
+            selected: [],
+            WAIT_TO_START: WAIT_TO_START,
+            PLAY: PLAY,
+            FINISHED: FINISHED,
+            EXCHANGE: EXCHANGE,
+            PREVIOUS_RANK: PREVIOUS_RANK,
+            PREVIOUS_PLAYERS_COUNT: PREVIOUS_PLAYERS_COUNT,
+            onMounted(){
+                $('[data-toggle="tooltip"]').tooltip();
+            },
+            onUpdated(){
+                $('[data-toggle="tooltip"]').tooltip();
+            },
+            onBeforeUpdate(){
+                $('[data-toggle="tooltip"]').tooltip('hide');
+            },
+            getRank(rank,playerCount){
+                return translateRankName(rankName(rank,playerCount));
+            },
+            startRefresh(){
+                window.setInterval(this.getGame,1000);
+            },
+            onSelect(card){
+                this.selected.push(card);
+                this.update();
+            },
+            onDeselect(card){
+                this.selected.splice(this.selected.indexOf(card),1);
+                this.update();
+            },
+            getGame(){
+                request(BASE_URL + "get?gid=" + this.game.gid).then(
+                    (response)=>{
+                        if(this.hasChange(response)) {
+                            this.game = response;
+                            this.update();
+                        }
+                    },
+                    (response)=>{
+                        decodeError(response);
+                    }
+                );
+            },
+            hasChange(newer){
+                if(this.game.state !== newer.state) {
+                    this.selected = [];
+                    return true;
+                }
+
+                switch (newer.state) {
+                    case WAIT_TO_START:
+                        return (
+                            Object.values(this.game.players).length !== Object.values(newer.players).length
+                        );
+                    case PLAY:
+                        for(let i = 0; i < Object.values(this.game.players).length; i++){
+                            if(
+                                this.game.players[i].fold !== newer.players[i].fold
+                                || this.game.players[i].revolution !== newer.players[i].revolution
+                                || Object.values(this.game.players[i].cards).length !== Object.values(newer.players[i].cards).length
+                            )
+                                return true;
+                        }
+
+                        return (
+                            this.game.turn !== newer.turn
+                            || Object.values(this.game.stack).length !== Object.values(newer.stack).length
+                            || this.game.revolution !== newer.revolution
+                            || this.game.amount !== newer.amount
+                            || this.game.sequence !== newer.sequence
+                        );
+                    case FINISHED:
+                        return false;
+                    case EXCHANGE:
+                        for(let i = 0; i < Object.values(this.game.players).length; i++){
+                            if(
+                                this.game.players[i].give !== newer.players[i].give
+                                || Object.values(this.game.players[i].cards).length !== Object.values(newer.players[i].cards).length
+                            )
+                                return true;
+                        }
+                        return false;
+                    default:
+                        return false;
+                }
+            },
+            create(e){
+                e.preventDefault();
+                let name = e.target.name.value;
+
+                if(!name || name.length > 10 || !isInputOk(name)){
+                    this.required = true;
+                    this.update();
+                    return;
+                }else
+                    this.required = false;
+
+                request(BASE_URL + "new?name=" + name).then(
+                     (response)=>{
+                        this.game = response;
+                        this.pid = this.game.players[0].pid;
+                        this.startRefresh();
+                        this.update();
+                    },
+                    (response)=>{
+                        decodeError(response);
+                    }
+                );
+            },
+            start(){
+                request(BASE_URL + "start?gid=" + this.game.gid + "&pid=" + this.pid).then(
+                    (response)=>{
+                    },
+                    (response)=>{
+                        decodeError(response);
+                    }
+                );
+            },
+            join(e){
+                e.preventDefault();
+                let name = e.target.name.value;
+                let key = e.target.key.value;
+
+                if((!name || name.length > 10 || !isInputOk(name)) || (!key || key.length > 10 || !isInputOk(key))){
+                    this.required = true;
+                    this.update();
+                    this.required = false;
+                    return;
+                }else
+                    this.required = false;
+
+                request(BASE_URL + "join?name=" + name + "&gid=" + key).then(
+                    (response)=>{
+                        this.game = {
+                            "gid": key
+                        };
+                        this.pid = response.pid;
+                        this.startRefresh();
+                    },
+                    (response)=>{
+                        if(response.code === WRONG_GAME_STATE_ERR)
+                            showError("Impossible de rejoindre : une partie est déjà en cours");
+                        else
+                            decodeError(response);
+                    }
+                );
+            },
+            put(e){
+                e.preventDefault();
+                let url = BASE_URL + "put?gid=" + this.game.gid + "&pid=" + this.pid + "&number=" + this.selected[0].number + "&types=";
+                for(card of this.selected)
+                    url += card.type + MULTIPLE_VALUES_DELIMITER;
+                request(url.substr(0,url.length - 1)).then(
+                    (response)=>{
+                    },
+                    (response)=>{
+                        decodeError(response);
+                    }
+                );
+                this.selected = [];
+            },
+            pass(e){
+                e.preventDefault();
+                request(BASE_URL + "pass?gid=" + this.game.gid + "&pid=" + this.pid).then(
+                    (response)=>{
+                    },
+                    (response)=>{
+                        decodeError(response);
+                    }
+                );
+            },
+            fold(e){
+                e.preventDefault();
+                request(BASE_URL + "fold?gid=" + this.game.gid + "&pid=" + this.pid).then(
+                    (response)=>{
+                    },
+                    (response)=>{
+                        decodeError(response);
+                    }
+                );
+            },
+            revolution(doRevolution){
+                request(BASE_URL + "revolution?gid=" + this.game.gid + "&pid=" + this.pid + "&do=" + doRevolution).then(
+                    (response)=>{
+                    },
+                    (response)=>{
+                        decodeError(response);
+                    }
+                );
+            },
+            next(e){
+                e.preventDefault();
+                request(BASE_URL + "next?gid=" + this.game.gid + "&pid=" + this.pid).then(
+                    (response)=>{
+                    },
+                    (response)=>{
+                        decodeError(response);
+                    }
+                );
+            },
+            give(to){
+                let url = BASE_URL + "give?gid=" + this.game.gid + "&pid=" + this.pid + "&to=" + to;
+                let types = "";
+                let numbers = "";
+                for(card of this.selected) {
+                    types += card.type + MULTIPLE_VALUES_DELIMITER;
+                    numbers += card.number + MULTIPLE_VALUES_DELIMITER;
+                }
+                url += "&types=" + types.substr(0,types.length - 1);
+                url += "&numbers=" + numbers.substr(0,numbers.length - 1);
+                request(url).then(
+                    (response)=>{
+                    },
+                    (response)=>{
+                        decodeError(response);
+                    }
+                );
+                this.selected = [];
+            },
+        }
+    </script>
+</game>

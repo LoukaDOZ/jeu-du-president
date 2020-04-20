@@ -1,0 +1,52 @@
+<rank>
+    <div class="container-fluid p-0 m-0 my-h-full-screen bg-primary my-font-1em">
+        <div class="container-fluid text-center p-2 bg-white">
+            <div class="h1 text-primary">
+                Classement
+            </div>
+        </div>
+        <div class="container-fluid bg-white d-flex justify-content-center my-font-2-5em" if="{ props.pid === 0 }">
+            <loadbutton btype="button" value="Retourner au menu principal" onclicked="{ props.next }"/>
+        </div>
+        <div class="container-fluid my-overflow-y-scroll bg-primary">
+            <div class="row">
+                <div class="col-sm-4 col-md-4 col-lg-3 col-xl-3 my-font-1em" each="{ player in players }">
+                    <div class="card m-2 text-center p-2 my-font-1em">
+                        <span class="font-weight-bold">{ player.name }</span>
+                        <span>{ getRank(player.rank,players.length) }</span>
+                        <span>Etait : { getRank(player[PREVIOUS_RANK],props.game[PREVIOUS_PLAYERS_COUNT]) }</span>
+                        <span>#{ player.rank }</span>
+                        <span>
+                            { player.score }{ player.score >= 0 && player.score <= 1 ? ' point ' : ' points ' }
+                            (+{ (players.length - player.rank) * 10 })
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        export default {
+            players: [],
+            GAME_COUNT : GAME_COUNT,
+            PREVIOUS_RANK: PREVIOUS_RANK,
+            PREVIOUS_PLAYERS_COUNT: PREVIOUS_PLAYERS_COUNT,
+            onBeforeActions(){
+                this.players = Object.values(this.props.game.players);
+                this.players.sort(function (a,b) {
+                    return (a.rank - b.rank);
+                });
+            },
+            onBeforeMount(){
+                this.onBeforeActions();
+            },
+            onBeforeUpdate(){
+                this.onBeforeActions();
+            },
+            getRank(rank,playerCount){
+                return translateRankName(rankName(rank,playerCount));
+            }
+        }
+    </script>
+</rank>

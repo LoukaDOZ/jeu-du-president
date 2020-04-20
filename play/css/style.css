@@ -1,0 +1,320 @@
+/* My CSS classes */
+
+@media (orientation: portrait) {
+    .my-orientation-warning {
+        visibility: visible;
+        background-color: rgba(0,0,0,0.8);
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 10000;
+    }
+
+    .my-device-rotate-animation {
+         animation-name: deviceRotate;
+         animation-iteration-count: infinite;
+         animation-timing-function: linear;
+         animation-duration: 3s;
+    }
+}
+
+@media (orientation: landscape) {
+    .my-orientation-warning {
+        visibility: hidden;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+@keyframes deviceRotate {
+    from {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+    }
+
+    30% {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+    }
+
+    40% {
+        transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+    }
+
+    to {
+        transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+    }
+}
+
+.my-revolution-animation {
+    animation-name: revolutionRotate;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-duration: 3s;
+}
+
+@keyframes revolutionRotate {
+    from {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+    }
+
+    20% {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+    }
+
+    30% {
+        transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+    }
+
+    70% {
+        transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+    }
+
+    80% {
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+.my-font-0-1em {
+    font-size: 0.1em !important;
+}
+
+.my-font-0-2em {
+    font-size: 0.2em !important;
+}
+
+.my-font-0-3em {
+    font-size: 0.3em !important;
+}
+
+.my-font-0-4em {
+    font-size: 0.4em !important;
+}
+
+.my-font-0-5em {
+    font-size: 0.5em !important;
+}
+
+.my-font-0-6em {
+    font-size: 0.6em !important;
+}
+
+.my-font-0-7em {
+    font-size: 0.7em !important;
+}
+
+.my-font-0-8em {
+    font-size: 0.8em !important;
+}
+
+.my-font-0-9em {
+    font-size: 0.9em !important;
+}
+
+.my-font-1em {
+    font-size: 1em !important;
+}
+
+.my-font-1-1em {
+    font-size: 1.1em !important;
+}
+
+.my-font-1-2em {
+    font-size: 1.2em !important;
+}
+
+.my-font-1-3em {
+    font-size: 1.3em !important;
+}
+
+.my-font-1-4em {
+    font-size: 1.4em !important;
+}
+
+.my-font-1-5em {
+    font-size: 1.5em !important;
+}
+
+.my-font-1-6em {
+    font-size: 1.6em !important;
+}
+
+.my-font-1-7em {
+    font-size: 1.7em !important;
+}
+
+.my-font-1-8em {
+    font-size: 1.8em !important;
+}
+
+.my-font-1-9em {
+    font-size: 1.9em !important;
+}
+
+.my-font-2em {
+    font-size: 2em !important;
+}
+
+.my-font-2-1em {
+    font-size: 2.1em !important;
+}
+
+.my-font-2-2em {
+    font-size: 2.2em !important;
+}
+
+.my-font-2-3em {
+    font-size: 2.3em !important;
+}
+
+.my-font-2-4em {
+    font-size: 2.4em !important;
+}
+
+.my-font-2-5em {
+    font-size: 2.5em !important;
+}
+
+.my-font-2-6em {
+    font-size: 2.6em !important;
+}
+
+.my-font-2-7em {
+    font-size: 2.7em !important;
+}
+
+.my-font-2-8em {
+    font-size: 2.8em !important;
+}
+
+.my-font-2-9em {
+    font-size: 2.9em !important;
+}
+
+.my-font-3em {
+    font-size: 3em !important;
+}
+
+.my-overflow-y-scroll {
+    overflow-y: scroll;
+}
+
+.my-cursor-default {
+    cursor: default !important;
+}
+
+.my-cursor-pointer {
+    cursor: pointer;
+}
+
+.my-z-top {
+    z-index: 1000;
+}
+
+.my-z-toast {
+    z-index: 1001;
+}
+
+.my-card{
+    top: 0;
+    cursor: default;
+    padding: 0.1rem !important;
+    border-radius: 0.2em;
+    background-color: black;
+    border: hidden;
+    position: relative;
+    transition: all 0.1s;
+}
+
+.my-card-focused{
+    top: -20px;
+    cursor: pointer;
+    background-color: #ffc107;
+    transition: all 0.1s;
+}
+
+.my-card-focused:hover{
+    z-index: 1000;
+    transition: all 0.1s;
+}
+
+.my-card-focusable{
+    cursor: pointer;
+}
+
+.my-card-hoverable:hover{
+    top: -20px;
+    z-index: 1000;
+    transform: rotate(0deg) !important;
+    -webkit-transform: rotate(0deg) !important;
+    transition: all 0.1s;
+}
+
+.my-card-disabled{
+    cursor: not-allowed;
+    filter: brightness(0.6);
+    transition: all 0.1s;
+}
+
+.my-w-100pc {
+    width: 100%;
+}
+
+.my-h-full-screen {
+    height: 100vh;
+}
+
+.my-h-100pc {
+    height: 100%;
+}
+
+.my-h-90pc {
+    height: 90%;
+}
+
+.my-h-80pc {
+    height: 80%;
+}
+
+.my-h-70pc {
+    height: 70%;
+}
+
+.my-h-60pc {
+    height: 60%;
+}
+
+.my-h-50pc {
+    height: 50%;
+}
+
+.my-h-40pc {
+    height: 40%;
+}
+
+.my-h-30pc {
+    height: 30%;
+}
+
+.my-h-20pc {
+    height: 20%;
+}
+
+.my-h-10pc {
+    height: 10%;
+}

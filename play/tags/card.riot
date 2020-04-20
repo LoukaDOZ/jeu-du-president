@@ -1,0 +1,22 @@
+<card>
+    <img src="images/{ props.hide ? 'back' : (props.card.type + props.card.number) }.png" alt="no image"
+         class="my-card m-0
+         { props.focused && !props.disabled ? 'my-card-focused' : '' }
+         { props.hoverable && !props.disabled ? 'my-card-hoverable' : '' }
+         { props.focusable && !props.disabled ? 'my-card-focusable' : '' }
+         { props.disabled ? 'my-card-disabled' : '' }"
+         style="left:{ props.offset }px;
+         width: { props.width }px;
+         height: { props.height }px;
+         transform: rotate({ props.rotate }deg);
+         -webkit-transform: rotate({ props.rotate }deg);"
+         onclick="{ (props.focusable && !props.disabled) || (props.focused && !props.disabled) ? onClick : '' }">
+
+    <script>
+        export default {
+            onClick(e){
+                this.props.focused ? this.props.ondeselect(this.props.card) : this.props.onselect(this.props.card);
+            }
+        }
+    </script>
+</card>

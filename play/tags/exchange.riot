@@ -1,0 +1,206 @@
+<exchange>
+    <div class="container-fluid m-0 p-0 my-h-full-screen overflow-hidden">
+        <div class="container-fluid my-h-20pc my-overflow-y-scroll bg-primary">
+            <div class="row">
+                <div class="col-sm-4 col-md-4 col-lg-3 col-xl-3" each="{ player in Object.values(props.game.players) }">
+                    <div class="card m-2 text-center p-2 my-font-0-8em">
+                        <div if="{ player.gives || getRankName(player[PREVIOUS_RANK],props.game[PREVIOUS_PLAYERS_COUNT]) === NEUTRAL }"
+                             class="position-absolute" style="cursor: default;">
+                            <svg class="bi bi-check text-primary" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M13.854 3.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3.5-3.5a.5.5 0 11.708-.708L6.5 10.293l6.646-6.647a.5.5 0 01.708 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <span class="font-weight-bold">{ player.name }</span>
+                        <span>{ translate(getRankName(player[PREVIOUS_RANK],props.game[PREVIOUS_PLAYERS_COUNT])) }</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid m-0 p-0 my-h-30pc">
+            <div class="container-fluid m-0 p-3 d-flex align-items-center justify-content-center
+                        { rankName === NEUTRAL ? 'my-h-100pc' : 'my-h-60pc' }" style="font-size: 5vh;">
+                <span class="container-fluid text-primary text-center">
+                    En tant que <span class="text-lowercase">{ translate(rankName) }</span>,
+                    { rankName === PRESIDENT ? 'vous devez donner 2 cartes au ' : '' }
+                    { rankName === VICE_PRESIDENT ? 'vous devez donner 1 carte au ' : '' }
+                    { rankName === NEUTRAL ? 'vous ne donnez pas de carte ' : '' }
+                    { rankName === VICE_ASSHOLE ? 'vous devez donner votre meilleure carte au ' : '' }
+                    { rankName === ASSHOLE ? 'vous devez donner vos 2 meilleures cartes au ' : '' }
+                    <span if="{ rankName !== NEUTRAL }" class="text-lowercase">{ translate(this.toRankName) }</span>
+                </span>
+            </div>
+            <div class="container-fluid m-0 p-0 d-flex align-items-center justify-content-center my-h-40pc my-font-2em"
+                 if="{ rankName !== NEUTRAL }">
+                <loadbutton btype="button" value="Lancer la partie !" if="{ props.pid === 0 }"
+                            onclicked="{ props.next }" disabled="{ !allGive }"
+                            reason="Les échanges ne sont pas finis"/>
+                <loadbutton btype="button" value="Donner { props.selected.length > 1 ? 'ces cartes' : 'cette carte' }"
+                            onclicked="{ onBeforeGive }"
+                            disabled="{ props.selected.length < amount || props.game.players[props.pid].gives }"
+                            reason="{ props.selected.length < amount && !props.game.players[props.pid].gives ?
+                            'Selectionnez plus de cartes' : 'Vous avez déjà donné' }"/>
+            </div>
+        </div>
+        <div class="container-fluid m-0 p-0 row my-h-10pc">
+            <div class="col-sm-9 col-md-9 col-lg-9 col-xl-10 p-1 my-h-100pc">
+                <div class="container-fluid my-h-100pc text-white bg-primary d-flex align-items-center justify-content-center">
+                    Mes cartes
+                </div>
+            </div>
+            <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 p-1 my-h-100pc">
+                <div class="container-fluid my-h-100pc text-white bg-primary d-flex align-items-center justify-content-center">
+                    Reçu
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid m-0 p-0 row my-h-40pc">
+            <div class="col-sm-9 col-md-9 col-lg-9 col-xl-10 p-1 my-h-100pc">
+                <div id="ownCards" class="bg-primary p-0 d-flex align-items-center justify-content-center my-h-100pc">
+                    <deck cards="{ ownCards }" parent="ownCards" hratio="0.8" wratio="0.6" max="26"
+                          onselect="{ props.onselect }" ondeselect="{ props.ondeselect }"
+                          hoverablefunction="{ hoverableFunction }" focusablefunction="{ focusableFunction }"
+                          focusedfunction="{ focusedFunction }" disabledfunction="{ disabledFunction }"/>
+                </div>
+            </div>
+            <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 p-1 my-h-100pc">
+                <div id="receivedCards" class="bg-primary p-0 d-flex align-items-center justify-content-center my-h-100pc">
+                    <deck cards="{ received }" parent="receivedCards" hratio="0.8" wratio="0.6" max="2.5"
+                          hoverablefunction="{ receivedHoverableFunction }" focusablefunction="{ receivedFocusableFunction }"
+                          focusedfunction="{ receivedFocusedFunction }" disabledfunction="{ receivedDisabledFunction }"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        export default {
+            ownCards: [],
+            received: [],
+            rankName: "",
+            toRankName: "",
+            to: 0,
+            amount: 0,
+            allGive: false,
+            PREVIOUS_RANK: PREVIOUS_RANK,
+            PREVIOUS_PLAYERS_COUNT: PREVIOUS_PLAYERS_COUNT,
+            PRESIDENT: PRESIDENT,
+            VICE_PRESIDENT: VICE_PRESIDENT,
+            NEUTRAL: NEUTRAL,
+            VICE_ASSHOLE: VICE_ASSHOLE,
+            ASSHOLE: ASSHOLE,
+            onBeforeActions() {
+                this.rankName = rankName(this.props.game.players[this.props.pid][PREVIOUS_RANK], this.props.game[PREVIOUS_PLAYERS_COUNT]);
+                this.ownCards = Object.values(this.props.game.players[this.props.pid].cards);
+
+                if(!this.toRankName){
+                    switch (this.rankName) {
+                        case PRESIDENT:
+                            this.toRankName = ASSHOLE;
+                            this.amount = 2;
+                            break;
+                        case VICE_PRESIDENT:
+                            this.toRankName = VICE_ASSHOLE;
+                            this.amount = 1;
+                            break;
+                        case VICE_ASSHOLE:
+                            this.toRankName = VICE_PRESIDENT;
+                            this.amount = 1;
+                            break;
+                        case ASSHOLE:
+                            this.toRankName = PRESIDENT;
+                            this.amount = 2;
+                            break;
+                        default:
+                            this.toRankName = "";
+                            this.amount = 0;
+                            break;
+                    }
+
+                    this.allGive = true;
+                    for (player of Object.values(this.props.game.players)) {
+                        let rName = rankName(player[PREVIOUS_RANK], this.props.game[PREVIOUS_PLAYERS_COUNT]);
+                        if (rName === this.toRankName)
+                            this.to = player.pid;
+
+                        if(!player.gives && rName !== NEUTRAL)
+                            this.allGive = false;
+                    }
+                }else{
+                    this.allGive = true;
+                    for (player of Object.values(this.props.game.players)) {
+                        let rName = rankName(player[PREVIOUS_RANK], this.props.game[PREVIOUS_PLAYERS_COUNT]);
+                        if(!player.gives && rName !== NEUTRAL)
+                            this.allGive = false;
+                    }
+                }
+
+                if(this.props.game.players[this.to].gives){
+                    this.received = this.ownCards.splice(this.ownCards.length - this.amount,this.ownCards.length);
+                }
+            },
+            onBeforeMount(){
+                this.onBeforeActions();
+            },
+            onBeforeUpdate(){
+                this.onBeforeActions();
+            },
+            onBeforeGive(e){
+                e.preventDefault();
+                this.props.give(this.to);
+            },
+            translate(rank){
+                return translateRankName(rank);
+            },
+            getRankName(rank,playerCount){
+                return rankName(rank,playerCount);
+            },
+            isSelected(card){
+                if(!this.props.selected)
+                    return false;
+
+                for(let select of this.props.selected) {
+                    if (select.type === card.type && select.number === card.number)
+                        return true;
+                }
+                return false;
+            },
+            canBeSelected(card){
+                for(let i = 1; i <= this.amount; i++){
+                    if(this.ownCards[this.ownCards.length - i].type === card.type
+                        && this.ownCards[this.ownCards.length - i].number === card.number)
+                        return true;
+                }
+                return false;
+            },
+            hoverableFunction(card){
+                return !this.isSelected(card);
+            },
+            focusableFunction(card){
+                return !this.isSelected(card);
+            },
+            focusedFunction(card){
+                return this.isSelected(card);
+            },
+            disabledFunction(card){
+                return (
+                    !this.isSelected(card)
+                    && ((this.rankName === VICE_ASSHOLE || this.rankName === ASSHOLE) && !this.canBeSelected(card)
+                        || (this.props.selected.length >= this.amount)
+                        || this.props.game.players[this.props.pid].gives)
+                );
+            },
+            receivedHoverableFunction(card){
+                return true;
+            },
+            receivedFocusableFunction(card){
+                return false;
+            },
+            receivedFocusedFunction(card){
+                return false;
+            },
+            receivedDisabledFunction(card){
+                return false;
+            }
+        }
+    </script>
+</exchange>

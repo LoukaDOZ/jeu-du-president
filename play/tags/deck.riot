@@ -1,0 +1,43 @@
+<deck class="text-nowrap" style="width: { ((width - offset) * props.cards.length) + offset }px;">
+    <card each="{ (card,index) in cards }" hide="{ props.hide }" width="{ width }" height="{ height }"
+          offset="{ -(offset * index) }" rotate="0" card="{ card }"
+          hoverable="{ !props.hide && props.hoverablefunction(card) }"
+          focusable="{ !props.hide && props.focusablefunction(card) }"
+          focused="{ !props.hide && props.focusedfunction(card) }"
+          disabled="{ !props.hide && props.disabledfunction(card) }"
+          onselect="{ props.onselect }"
+          ondeselect="{ props.ondeselect }"/>
+
+
+    <script>
+        export default {
+            cards: [],
+            width: 0,
+            height: 0,
+            offset: 0,
+            onBeforeActions(){
+                this.cards = this.props.cards;
+                if(!this.props.hide){
+                    this.cards.sort(function (a,b) {
+                        return compareCards(a.number,b.number,false);
+                    });
+                }
+
+                let parent = document.getElementById(this.props.parent);
+                this.height = parent.clientHeight * this.props.hratio;
+                this.width = this.height * this.props.wratio;
+
+                let ratioParentWidth = (parent.clientWidth - (parent.clientHeight * (1 - this.props.hratio)));
+                while((((this.width - this.offset) * this.props.max) + this.offset) > ratioParentWidth){
+                    this.offset++;
+                }
+            },
+            onBeforeMount(){
+                this.onBeforeActions();
+            },
+            onBeforeUpdate(){
+                this.onBeforeActions();
+            }
+        }
+    </script>
+</deck>

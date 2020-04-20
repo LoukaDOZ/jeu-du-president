@@ -1,0 +1,55 @@
+<home>
+    <div class="container-fluid my-font-1em" style="padding: 1em;">
+        <div class="container text-center h1 text-primary my-font-3em">
+            Jeu du Président
+            <div>
+                <img src="images/page_icon_blue.png" alt="no logo" style="width: 2.5em; height: 2.5em;">
+            </div>
+        </div>
+        <div class="container text-center my-font-2-2em">
+            <loadbutton btype="button" value="Consulter les règles du jeu" disablespin="{ true }" onclicked="{ showRules }"/>
+
+            <form class="form-group p-0 my-font-1em" onsubmit="{ create ? props.create : props.join}">
+                <div class="col-6 offset-3 d-flex justify-content-between p-0 my-font-1em">
+                    <loadbutton btype="button" value="Créer" disablespin="{ true }" onclicked="{ showCreate }"/>
+                    <loadbutton btype="button" value="Rejoindre" disablespin="{ true }" onclicked="{ showJoin }"/>
+                </div>
+
+                <label for="name" class="text-primary my-font-0-6em">Pseudo</label>
+                <input id="name" type="text" class="form-control col-6 offset-3 my-font-0-4em" name="name" placeholder="Entrez votre pseudo">
+
+                <div class="collapse { create ? '' : 'show' }">
+                    <label for="key" class="text-primary my-font-0-6em">Clé de la partie</label>
+                    <input id="key" type="text" class="form-control col-6 offset-3 my-font-0-4em" name="key" placeholder="Entrez la clé">
+                </div>
+
+                <loadbutton btype="submit" value="{ create ? 'Créer' : 'Rejoindre' } la partie !"/>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        export default {
+            create: true,
+            showError: true,
+            onBeforeUpdate(){
+                if(this.props.required && this.showError)
+                    showError("Le pseudo et la clé doivent être supérieurs à 1 et inférieurs à 10 caractères et ne doivent pas contenir : &, %, \", ' ou /");
+                this.showError = true;
+            },
+            showCreate(e){
+                this.showError = false;
+                this.create = true;
+                this.update();
+            },
+            showJoin(e){
+                this.showError = false;
+                this.create = false;
+                this.update();
+            },
+            showRules(e){
+                showRules();
+            }
+        }
+    </script>
+</home>

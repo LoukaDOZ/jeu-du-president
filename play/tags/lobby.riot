@@ -1,0 +1,78 @@
+<lobby>
+    <div class="container-fluid p-0 m-0 my-h-full-screen bg-primary my-font-1em">
+        <div class="container-fluid text-center p-2 bg-white">
+            <div class="h1 text-primary">
+                En attente
+            </div>
+            <div class="h5 text-primary">
+                { props.game[GAME_COUNT] < 1 ? 'Aucune' : props.game[GAME_COUNT] } { props.game[GAME_COUNT] < 2 ? 'partie jouée' : 'parties jouées' }
+            </div>
+        </div>
+        <div class="container-fluid bg-white pb-3" if="{ props.pid === 0 }">
+            <div class="input-group d-flex justify-content-center">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Partage cette clé :</span>
+                </div>
+                <span class="input-group-text rounded-0" id="toCopy">{ props.game.gid }</span>
+                <div class="input-group-append">
+                    <button type="button" class="btn input-group-text d-flex align-items-center"
+                            title="Copier dans le presse papier"  data-toggle="tooltip" data-placement="bottom" onclick="{ copy }">
+                        <svg class="bi bi-clipboard" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M4 1.5H3a2 2 0 00-2 2V14a2 2 0 002 2h10a2 2 0 002-2V3.5a2 2 0 00-2-2h-1v1h1a1 1 0 011 1V14a1 1 0 01-1 1H3a1 1 0 01-1-1V3.5a1 1 0 011-1h1v-1z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd" d="M9.5 1h-3a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5zm-3-1A1.5 1.5 0 005 1.5v1A1.5 1.5 0 006.5 4h3A1.5 1.5 0 0011 2.5v-1A1.5 1.5 0 009.5 0h-3z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid bg-white d-flex justify-content-center my-font-2-5em">
+            <loadbutton if="{ props.pid === 0 }" btype="button" value="Commencer la partie !" onclicked="{ props.start }"
+            disabled="{ Object.values(props.game.players).length < 2 }" reason="Pas assez de joueurs"/>
+            <loadbutton btype="button" value="Consulter les règles du jeu" disablespin="{ true }" onclicked="{ showRules }"/>
+        </div>
+        <div class="container-fluid my-overflow-y-scroll bg-primary my-font-1em">
+            <div class="row my-font-1em">
+                <div class="col-sm-4 col-md-4 col-lg-3 col-xl-3 my-font-1em" each="{ player in players }">
+                    <div class="card m-2 text-center p-2 my-font-1em">
+                        <span class="font-weight-bold">{ player.name }</span>
+                        <span>{ getRank(player[PREVIOUS_RANK],props.game[PREVIOUS_PLAYERS_COUNT]) }</span>
+                        <span>{ player.score }{ player.score >= 0 && player.score <= 1 ? ' point' : ' points' }</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        export default {
+            players: [],
+            GAME_COUNT : GAME_COUNT,
+            PREVIOUS_RANK: PREVIOUS_RANK,
+            PREVIOUS_PLAYERS_COUNT: PREVIOUS_PLAYERS_COUNT,
+            onBeforeActions() {
+                this.players = Object.values(this.props.game.players);
+                this.players.sort(function (a,b) {
+                    return (a.score - b.score) * -1;
+                });
+            },
+            onBeforeMount(){
+                this.onBeforeActions();
+            },
+            onBeforeUpdate(){
+                this.onBeforeActions();
+            },
+            copy(){
+                let range = document.createRange();
+                range.selectNode(document.getElementById("toCopy"));
+                window.getSelection().addRange(range);
+                document.execCommand("copy");
+            },
+            getRank(rank,playerCount){
+                return translateRankName(rankName(rank,playerCount));
+            },
+            showRules(e){
+                showRules();
+            }
+        }
+    </script>
+</lobby>

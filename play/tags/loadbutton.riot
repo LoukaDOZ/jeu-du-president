@@ -1,0 +1,23 @@
+<loadbutton>
+    <button class="btn btn-outline-primary m-3 my-font-0-4em
+    { props.disabled ? 'disabled my-cursor-default' : 'my-cursor-pointer' }"
+            type="{ props.btype }"
+            onclick="{ props.onclicked && !props.disabled ? onBeforeClick : '' }"
+            data-original-title="{ props.disabled ? props.reason : '' }" data-toggle="tooltip" data-placement="bottom">
+        <span if="{ spin && !props.disablespin }" class="spinner-border spinner-border-sm mr-1"
+              style="width: 1em; height: 1em; border-width: 0.1rem;"/>
+        { props.value }
+    </button>
+
+    <script>
+        export default {
+            spin: false,
+            onBeforeClick(e){
+                this.spin = true;
+                this.update();
+                this.spin = false;
+                this.props.onclicked(e);
+            }
+        }
+    </script>
+</loadbutton>

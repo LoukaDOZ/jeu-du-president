@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width = device-width, initial-scale = 1">
+	<link rel="icon" type="image/png" href="images/page_icon_blue.png">
+	<title>Jeu du Président</title>
+
+	<!-- My files -->
+	<script src="js/constants.js" type="text/javascript"></script>
+	<script src="js/helper.js" type="text/javascript"></script>
+	<script src="js/network.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="css/style.css">
+	<!-- Bootstrap files -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="js/bootstrap/bootstrap.js" type="text/javascript"></script>
+	<script src="js/bootstrap/bootstrap.bundle.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="css/bootstrap/bootstrap.css">
+	<!-- Tags -->
+	<script src="tags/game.riot" type="riot"></script>
+	<script src="tags/home.riot" type="riot"></script>
+	<script src="tags/loadbutton.riot" type="riot"></script>
+	<script src="tags/lobby.riot" type="riot"></script>
+	<script src="tags/play.riot" type="riot"></script>
+	<script src="tags/rank.riot" type="riot"></script>
+	<script src="tags/exchange.riot" type="riot"></script>
+	<script src="tags/deck.riot" type="riot"></script>
+	<script src="tags/stack.riot" type="riot"></script>
+	<script src="tags/card.riot" type="riot"></script>
+	<!-- Riot -->
+	<script src="https://cdn.jsdelivr.net/npm/riot@4/riot+compiler.min.js"></script>
+
+</head>
+<script>
+	//Initializing
+	riot.compile().then(()=>{
+		riot.mount('game');
+	});
+</script>
+<body>
+	<!-- Content -->
+	<game></game>
+
+	<!-- Error toast -->
+	<div id="errors" class="toast position-fixed my-z-toast" data-animation="true" data-autohide="true" data-delay="8000"
+		 style="top: 2vh;width: 30%;left: 2vh;">
+		<div class="toast-header bg-danger text-white">
+			<strong class="mr-auto">Erreur</strong>
+			<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div id="toastBody" class="toast-body bg-light bg-danger text-danger"></div>
+	</div>
+
+	<!-- Portrait warning -->
+	<div class="my-orientation-warning position-fixed d-flex justify-content-center align-items-center text-primary">
+		<svg class="bi bi-phone my-device-rotate-animation" width="10em" height="10em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+			<path fill-rule="evenodd" d="M11 1H5a1 1 0 00-1 1v12a1 1 0 001 1h6a1 1 0 001-1V2a1 1 0 00-1-1zM5 0a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2V2a2 2 0 00-2-2H5z" clip-rule="evenodd"/>
+			<path fill-rule="evenodd" d="M8 14a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+		</svg>
+	</div>
+
+	<!-- Rules -->
+	<div id="rules" class="modal fade">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<!-- Modal head -->
+				<div class="modal-header">
+					<h5 class="modal-title font-weight-bold">Règles du jeu</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<!-- Modal body -->
+				<div class="modal-body">
+					<div class="h3 text-primary">Disclaimer</div>
+					Vous allez jouer au "jeu de président".
+					Pour cette raison, il est possible de recontrer les mots "trou du cul" et "vice trou du cul".
+					Ils permettent de classer les joueurs à la fin d'une partie mais n'ont, en aucun cas, pour but d'insulter quiconque.
+
+					<div class="h3 text-primary mt-4">Les bases</div>
+					Un jeu de 52 cartes va être ditribué de façon équitable entre les joueurs.
+					L'objectif du jeu est de poser toutes ses cartes avant les autres.
+					<br>
+					Pics, coeurs, carreaux et trefles, ainsi que les couleurs rouges et noires, n'ont pas d'importance, seuls les chiffres importent.
+					Vous pouvez poser une carte que si son chiffre est supérieur ou égal à celui de la dernière carte de la pile.
+					Il est possible de poser un double (2 cartes), un triple (3 cartes) ou un quadruple (4 cartes) à conditions que ces cartes aient toutes le même chiffre.
+					<br>
+					Le joueur qui entame une manche peut poser simple, double, triple ou quadruple. Les joueurs suivant devront faire de même jusqu'à la fin de la manche.
+					<br>
+					Si à la fin d'une manche, la main revient à un joueur qui a terminé, la main est donnée au joueur qui le suit.
+
+					<div class="h3 text-primary mt-4">Les cartes</div>
+					L'ordre d'importance des cartes est le suivant :
+					<br>
+					3 < 4 < 5 < 6 < 7 < 8 < 9 < 10 < J < Q < K < As < 2
+					<br>
+					Le 2 a pour particularité, en plus d'être la plus puissante carte, de stopper la manche.
+					Le joueur qui a stoppé la manche prend la main.
+
+					<div class="h3 text-primary mt-4">Se coucher</div>
+					A tout moment vous pourrez vous coucher. <strong>Attention! </strong>
+					Si vous êtes couché, vous ne pouvez plus jouer jusqu'à la fin de la manche.
+					<br>
+					Si vous ne pouvez pas jouer, vous devez vous coucher.
+					<br>
+					Si tous les joueurs sont couchés, la main revient au dernier qui à posé une carte.
+
+					<div class="h3 text-primary mt-4">... ou rien</div>
+					Lorsque des cartes de même valeur sont posées à la suite, vous pouvez poser une carte de la même valeur ou alors passer votre tour.
+					Contrairement à se coucher, passer son tour vous fait rester dans la course.
+
+					<div class="h3 text-primary mt-4">Révolution</div>
+					Lorsque les 4 cartes de même chiffre sont posées à la suite, la personne qui à posé la 4ème carte peut faire révolution ou non.
+					Faire révolution change l'ordre des cartes. Le 2 devient la plus mauvaise carte et le 3 devient la meilleure.
+					En révolution, c'est le 3 qui stoppe une manche et donne la main au joueur qui l'a posé.
+					<br>
+					La révolution dure jusqu'à la fin de la manche.
+					<br>
+					Il est possible de faire révolution pendant une révolution.
+					Cela annule la révolution en cours. Les cartes retrouve alors leur ordre original.
+					<br>
+					Que le choix soit de faire révolution ou non, le joueur qui suit celui qui à pu faire ce choix est sauté.
+
+					<div class="h3 text-primary mt-4">Classement</div>
+					Le joueur ayant fini en premier est président et celui qui a fini en dernier est trou du cul.
+					Si la partie compte plus de 3 joueurs, le 2ème est vice président et l'avant dernier est vice trou du cul.
+					Les autres sont neutres.
+					<br>
+					Des points sont attribués en fonction du classement. Mieux vous êtes classé, plus vous gagnez de points.
+
+					<div class="h3 text-primary mt-4">Echange de cartes</div>
+					Après la première partie, qui a permis de classer les joueurs, une nouvelle phase à lieu.
+					Durant cette phase, les joueurs s'échangent des cartes.
+					<br>
+					Le président donne 2 cartes de son choix au trou du cul.
+					<br>
+					Le vice président donne 1 carte de son choix au vice trou du cul.
+					<br>
+					Les neutres ne donnent rien.
+					<br>
+					Le vice trou du cul donne sa meilleure carte au vice président.
+					<br>
+					Le trou du cul donne ses 2 meilleures cartes au président.
+
+					<div class="h3 text-primary mt-4">Faites gaffe !</div>
+					Vous ne devez pas terminer avec un 2 (ou un 3 en révolution). Si c'est le cas, vous êtes imédiatemment trou du cul.
+				</div>
+				<!-- Modal footer -->
+				<div class="modal-footer justify-content-center">
+					<button type="button" class="btn btn-outline-primary" data-dismiss="modal" aria-label="Close">
+						C'est bon j'ai tout compris !
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
