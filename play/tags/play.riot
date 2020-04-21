@@ -13,7 +13,7 @@
                     </div>
                     <!-- Modal footer -->
                     <div class="modal-footer justify-content-center">
-                        <button type="button" class="btn btn-outline-primary mr-2" data-dismiss="modal" aria-label="Close"
+                        <button type="button" class="btn btn-outline-danger mr-2" data-dismiss="modal" aria-label="Close"
                             onclick="{ revolutionFalse }">
                             Non
                         </button>
@@ -27,7 +27,7 @@
         </div>
 
         <div class="col-4 p-0 my-h-100pc border border-dark">
-            <div each="{ (player,index) in Object.values(props.game.players) }" style="height: calc(100%/8);"
+            <div each="{ (player,index) in props.game.players }" style="height: calc(100%/8);"
                     class="container-fluid m-0 p-0 row text-nowrap border border-dark border-right-0
                     { player.pid === props.pid ? 'bg-secondary text-white' : 'bg-white' }">
 
@@ -50,9 +50,9 @@
                         { player.score } points
                     </div>
                 </div>
-                <div if="{ Object.values(player.cards).length > 0 }" id="deck{ player.pid }"
+                <div if="{ player.cards.length > 0 }" id="deck{ player.pid }"
                      class="col-8 d-flex align-items-center justify-content-center my-h-100pc">
-                    <deck cards="{ Object.values(player.cards) }" hide="{ true }" parent="deck{ player.pid }"
+                    <deck cards="{ player.cards }" hide="{ true }" parent="deck{ player.pid }"
                           hratio="0.8" wratio="0.6" max="26"/>
                     <div class="container-fluid position-absolute text-center"
                          if="{ player.fold }">
@@ -63,12 +63,12 @@
                 </div>
                 <div class="col-8 d-flex align-items-center justify-content-center my-h-100pc my-font-1em
                             { player.pid === props.pid ? 'text-white' : 'text-primary' }"
-                     if="{ Object.values(player.cards).length <= 0 }">
+                     if="{ player.cards.length <= 0 }">
                     <svg class="bi bi-award" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M9.669.864L8 0 6.331.864l-1.858.282-.842 1.68-1.337 1.32L2.6 6l-.306 1.854 1.337 1.32.842 1.68 1.858.282L8 12l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 6l.306-1.854-1.337-1.32-.842-1.68L9.669.864zm1.196 1.193l-1.51-.229L8 1.126l-1.355.702-1.51.229-.684 1.365-1.086 1.072L3.614 6l-.25 1.506 1.087 1.072.684 1.365 1.51.229L8 10.874l1.356-.702 1.509-.229.684-1.365 1.086-1.072L12.387 6l.248-1.506-1.086-1.072-.684-1.365z" clip-rule="evenodd"/>
                         <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z"/>
                     </svg>
-                    { ' '+ getRank(player.rank,Object.values(props.game.players).length) }
+                    { ' '+ getRank(player.rank,props.game.players.length) }
                 </div>
             </div>
         </div>
@@ -191,7 +191,7 @@
                     </svg>
                     Tu es
                     <span class="text-lowercase my-font-1em">
-                        { ' '+ getRank(props.game.players[props.pid][RANK],Object.values(props.game.players).length) }
+                        { ' '+ getRank(props.game.players[props.pid][RANK],props.game.players.length) }
                     </span>
                 </div>
             </div>
@@ -213,9 +213,9 @@
             PREVIOUS_RANK: PREVIOUS_RANK,
             PREVIOUS_PLAYERS_COUNT: PREVIOUS_PLAYERS_COUNT,
             onBeforeActions(){
-                this.stack = Object.values(this.props.game.stack);
-                this.previousStack = Object.values(this.props.game[PREVIOUS_CARDS_PUT]);
-                this.ownCards = Object.values(this.props.game.players[this.props.pid].cards);
+                this.stack = this.props.game.stack;
+                this.previousStack = this.props.game[PREVIOUS_CARDS_PUT];
+                this.ownCards = this.props.game.players[this.props.pid].cards;
 
                 this.count.reset();
                 for(card of this.ownCards)

@@ -1,7 +1,7 @@
 <home>
     <div class="container-fluid my-font-1em" style="padding: 1em;">
         <div class="container text-center h1 text-primary my-font-3em">
-            Jeu du Président
+            Jeu du président
             <div>
                 <img src="images/page_icon_blue.png" alt="no logo" style="width: 2.5em; height: 2.5em;">
             </div>
@@ -31,12 +31,6 @@
     <script>
         export default {
             create: true,
-            showError: true,
-            onBeforeUpdate(){
-                if(this.props.required && this.showError)
-                    showError("Le pseudo et la clé doivent être supérieurs à 1 et inférieurs à 10 caractères et ne doivent pas contenir : &, %, \", ' ou /");
-                this.showError = true;
-            },
             showCreate(e){
                 this.showError = false;
                 this.create = true;

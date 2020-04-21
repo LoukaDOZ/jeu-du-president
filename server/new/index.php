@@ -15,7 +15,7 @@ while(test_exist_key($key)){
 
 //New game
 $base_content = new_game($key);
-array_push($base_content[PLAYERS],new_player(0,$player_name));
+array_push($base_content[PLAYERS],new_player(0,utf8_encode($player_name)));
 
 $base_content = json_encode($base_content,JSON_FORCE_OBJECT);
 //Saving new game

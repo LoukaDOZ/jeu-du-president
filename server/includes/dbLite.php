@@ -20,7 +20,8 @@ function get_game_value($key){
     $link = open();
 
     //Selected
-    $result = $link->query("SELECT value FROM tdc WHERE id='".$key."'");
+    $request = $link->prepare("SELECT value FROM tdc WHERE id=?");
+    $result = $request->execute(array($key));
     //Is ok
     return_message_on_cond(
         INTERNAL_SERVER_ERROR_CODE,
@@ -29,7 +30,7 @@ function get_game_value($key){
     );
 
     //id unique so always 1 result max
-    foreach ($result as $row){
+    foreach ($request->fetchAll() as $row){
         //Return information
         return json_decode($row['value'], true);
     }
@@ -43,7 +44,8 @@ function set_game_value($key,$array){
     $link = open();
 
     //Update
-    $result = $link->query("UPDATE tdc SET value='".json_encode($array,JSON_FORCE_OBJECT)."' WHERE id='".$key."'");
+    $request = $link->prepare("UPDATE tdc SET value=? WHERE id=?");
+    $result = $request->execute(array(json_encode($array,JSON_FORCE_OBJECT),$key));
     //Is ok
     return_message_on_cond(
         INTERNAL_SERVER_ERROR_CODE,
@@ -58,7 +60,8 @@ function save_new_game($id,$json){
     $link = open();
 
     //Insert
-    $result = $link->query("INSERT INTO tdc (`id`, `value`) VALUES ('".$id."','".$json."');");
+    $request = $link->prepare("INSERT INTO tdc (`id`, `value`) VALUES (?,?)");
+    $result = $request->execute(array($id,$json));
     //Is ok
     return_message_on_cond(
         INTERNAL_SERVER_ERROR_CODE,
@@ -73,10 +76,11 @@ function test_exist_key($key){
     $link = open();
 
     //Get a game with same key
-    $result = $link->query("SELECT value FROM tdc WHERE id='".$key."'");
+    $request = $link->prepare("SELECT value FROM tdc WHERE id=?");
+    $request->execute(array($key));
 
     //If there is a game with the same key
-    foreach ($result as $row){
+    foreach ($request->fetchAll() as $row){
         return true;
     }
 

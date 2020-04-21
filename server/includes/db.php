@@ -3,12 +3,12 @@
 
 function open(){
     //Connect
-    $link = mysqli_connect("localhost","root","","cards");
+    $link = mysqli_connect("localhost","loukadoz_user1","Cestlouka91*","loukadoz_cards");
     //Is connected
     return_message_on_cond(
         INTERNAL_SERVER_ERROR_CODE,
         DB_OPEN_ERR,
-        (!$link)
+        ((mysqli_errno($link)))
     );
     //Returning link
     return $link;
@@ -20,15 +20,13 @@ function get_game_value($key){
     $link = open();
 
     //Selected
-    $result = mysqli_query($link,"SELECT value FROM tdc WHERE id='".$key."'");
-    //Is ok
-    return_message_on_cond(
-        INTERNAL_SERVER_ERROR_CODE,
-        DB_GET_GAME_ERR,
-        (!$result || mysqli_num_rows($result) <= 0)
-    );
+    $request = mysqli_prepare($link,"SELECT value FROM tdc WHERE id=?");
+    mysqli_stmt_bind_param($request,"s",$key);
+    mysqli_stmt_execute($request);
+    $result = mysqli_stmt_get_result($request);
     
     //Closing
+    mysqli_stmt_close($request);
     mysqli_close($link);
 
     //id unique so always 1 result
@@ -46,15 +44,19 @@ function set_game_value($key,$array){
     $link = open();
 
     //Update
-    $result = mysqli_query($link,"UPDATE tdc SET value='".json_encode($array,JSON_FORCE_OBJECT)."' WHERE id='".$key."'");
+    $request = mysqli_prepare($link,"UPDATE tdc SET value=? WHERE id=?");
+    mysqli_stmt_bind_param($request,"ss",json_encode($array,JSON_FORCE_OBJECT),$key);
+    mysqli_stmt_execute($request);
+    $result = mysqli_stmt_get_result($request);
     //Is ok
     return_message_on_cond(
         INTERNAL_SERVER_ERROR_CODE,
         DB_SET_GAME_ERR,
-        (!$result)
+        ((mysqli_errno($link)))
     );
     
     //Closing
+    mysqli_stmt_close($request);
     mysqli_close($link);
 }
 
@@ -64,15 +66,19 @@ function save_new_game($id,$json){
     $link = open();
 
     //Insert
-    $result = mysqli_query($link,"INSERT INTO tdc (`id`, `value`) VALUES ('".$id."','".$json."');");
+    $request = mysqli_prepare($link,"INSERT INTO tdc (`id`, `value`) VALUES (?,?);");
+    mysqli_stmt_bind_param($request,"ss",$id,$json);
+    mysqli_stmt_execute($request);
+    $result = mysqli_stmt_get_result($request);
     //Is ok
     return_message_on_cond(
         INTERNAL_SERVER_ERROR_CODE,
         DB_CREATE_GAME_ERR,
-        (!$result)
+        (mysqli_errno($link))
     );
     
     //Closing
+    mysqli_stmt_close($request);
     mysqli_close($link);
 }
 
@@ -82,9 +88,13 @@ function test_exist_key($key){
     $link = open();
 
     //Get a game with same key
-    $result = mysqli_query($link,"SELECT value FROM tdc WHERE id='".$key."'");
+    $request = mysqli_prepare($link,"SELECT value FROM tdc WHERE id=?");
+    mysqli_stmt_bind_param($request,"s",$key);
+    mysqli_stmt_execute($request);
+    $result = mysqli_stmt_get_result($request);
     
     //Closing
+    mysqli_stmt_close($request);
     mysqli_close($link);
 
     //If there is a game with the same key

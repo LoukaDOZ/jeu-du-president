@@ -33,7 +33,7 @@
             PREVIOUS_RANK: PREVIOUS_RANK,
             PREVIOUS_PLAYERS_COUNT: PREVIOUS_PLAYERS_COUNT,
             onBeforeActions(){
-                this.players = Object.values(this.props.game.players);
+                this.players = this.props.game.players;
                 this.players.sort(function (a,b) {
                     return (a.rank - b.rank);
                 });

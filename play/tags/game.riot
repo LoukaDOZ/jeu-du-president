@@ -12,6 +12,8 @@
     <exchange if="{ game && game.state === EXCHANGE }" game="{ game }" pid="{ pid }" selected="{ selected }"
               give="{ give }" next="{ next }" onselect="{ onSelect }" ondeselect="{ onDeselect }"/>
 
+    <chat if="{ game }" game="{ game }" pid="{ pid }" send="{ send }"/>
+
     <script>
         export default {
             game: null,
@@ -51,7 +53,7 @@
                 request(BASE_URL + "get?gid=" + this.game.gid).then(
                     (response)=>{
                         if(this.hasChange(response)) {
-                            this.game = response;
+                            this.replaceGame(response);
                             this.update();
                         }
                     },
@@ -60,30 +62,42 @@
                     }
                 );
             },
+            replaceGame(newGame){
+                this.game = newGame;
+                this.game.chat = Object.values(newGame.chat);
+                this.game.stack = Object.values(newGame.stack);
+                this.game[PREVIOUS_CARDS_PUT] = Object.values(newGame[PREVIOUS_CARDS_PUT]);
+                this.game.players = Object.values(newGame.players);
+                for(player of this.game.players)
+                    player.cards = Object.values(newGame.players[player.pid].cards);
+            },
             hasChange(newer){
                 if(this.game.state !== newer.state) {
                     this.selected = [];
                     return true;
                 }
 
+                if(this.game.chat.length !== Object.values(newer.chat).length)
+                    return true;
+
                 switch (newer.state) {
                     case WAIT_TO_START:
                         return (
-                            Object.values(this.game.players).length !== Object.values(newer.players).length
+                            this.game.players.length !== Object.values(newer.players).length
                         );
                     case PLAY:
-                        for(let i = 0; i < Object.values(this.game.players).length; i++){
+                        for(let i = 0; i < this.game.players.length; i++){
                             if(
                                 this.game.players[i].fold !== newer.players[i].fold
                                 || this.game.players[i].revolution !== newer.players[i].revolution
-                                || Object.values(this.game.players[i].cards).length !== Object.values(newer.players[i].cards).length
+                                || this.game.players[i].cards.length !== Object.values(newer.players[i].cards).length
                             )
                                 return true;
                         }
 
                         return (
                             this.game.turn !== newer.turn
-                            || Object.values(this.game.stack).length !== Object.values(newer.stack).length
+                            || this.game.stack.length !== Object.values(newer.stack).length
                             || this.game.revolution !== newer.revolution
                             || this.game.amount !== newer.amount
                             || this.game.sequence !== newer.sequence
@@ -91,12 +105,13 @@
                     case FINISHED:
                         return false;
                     case EXCHANGE:
-                        for(let i = 0; i < Object.values(this.game.players).length; i++){
+                        for(let i = 0; i < this.game.players.length; i++){
                             if(
                                 this.game.players[i].give !== newer.players[i].give
-                                || Object.values(this.game.players[i].cards).length !== Object.values(newer.players[i].cards).length
-                            )
+                                || this.game.players[i].cards.length !== Object.values(newer.players[i].cards).length
+                            ) {
                                 return true;
+                            }
                         }
                         return false;
                     default:
@@ -106,20 +121,19 @@
             create(e){
                 e.preventDefault();
                 let name = e.target.name.value;
+                name = name.trim();
 
-                if(!name || name.length > 10 || !isInputOk(name)){
-                    this.required = true;
-                    this.update();
+                if(!name || name.length > 10){
+                    showError("Le pseudo et la clé doivent être supérieurs à 1 et inférieurs à 10 caractères");
                     return;
-                }else
-                    this.required = false;
+                }
 
-                request(BASE_URL + "new?name=" + name).then(
+                request(BASE_URL + "new?name=" + escape(name)).then(
                      (response)=>{
-                        this.game = response;
-                        this.pid = this.game.players[0].pid;
-                        this.startRefresh();
-                        this.update();
+                         this.replaceGame(response);
+                         this.pid = this.game.players[0].pid;
+                         this.startRefresh();
+                         this.update();
                     },
                     (response)=>{
                         decodeError(response);
@@ -139,16 +153,15 @@
                 e.preventDefault();
                 let name = e.target.name.value;
                 let key = e.target.key.value;
+                name = name.trim();
+                key = key.trim();
 
-                if((!name || name.length > 10 || !isInputOk(name)) || (!key || key.length > 10 || !isInputOk(key))){
-                    this.required = true;
-                    this.update();
-                    this.required = false;
+                if((!name || name.length > 10) || (!key || key.length > 10)){
+                    showError("Le pseudo et la clé doivent être supérieurs à 1 et inférieurs à 10 caractères");
                     return;
-                }else
-                    this.required = false;
+                }
 
-                request(BASE_URL + "join?name=" + name + "&gid=" + key).then(
+                request(BASE_URL + "join?name=" + escape(name) + "&gid=" + escape(key)).then(
                     (response)=>{
                         this.game = {
                             "gid": key
@@ -236,6 +249,17 @@
                 );
                 this.selected = [];
             },
+            send(message){
+                if(!message)
+                    return;
+                request(BASE_URL + "send?gid=" + this.game.gid + "&pid=" + this.pid + "&send=" + escape(message)).then(
+                    (response)=>{
+                    },
+                    (response)=>{
+                        decodeError(response);
+                    }
+                );
+            }
         }
     </script>
 </game>

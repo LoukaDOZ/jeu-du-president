@@ -15,6 +15,7 @@ const AMOUNT = "amount";
 const STACK = "stack";
 const PREVIOUS_CARDS_PUT = "previous cards put";
 const PLAYERS = "players";
+const CHAT = "chat";
 
 //Game state
 const WAIT_TO_START = "wait to start";
@@ -58,6 +59,7 @@ const GET_NUMBERS = "numbers";
 const GET_NUMBER = "number";
 const GET_NAME = "name";
 const GET_DO = "do";
+const GET_SEND = "send";
 
 //Return messages
 const CODE = "code";
@@ -111,3 +113,4 @@ const PLAYER_PUT_OK = "PLAYER_PUT_OK";
 const REVOLUTION_DONE_OK = "REVOLUTION_DONE_OK";
 const REVOLUTION_NOT_DONE_OK = "REVOLUTION_NOT_DONE_OK";
 const GAME_STARTED_OK = "GAME_STARTED_OK";
+const MESSAGE_SENT_OK = "MESSAGE_SENT_OK";

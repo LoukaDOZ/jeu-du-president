@@ -7,10 +7,6 @@ const showRules = function(){
     $('#rules').modal('toggle');
 };
 
-const isInputOk = function (name) {
-    return !name.match(new RegExp("[&%'\"/]"));
-};
-
 const decodeError = function (error) {
     let err = "";
     let args = [];

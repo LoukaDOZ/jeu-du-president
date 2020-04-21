@@ -20,7 +20,7 @@ function new_player($pid,$name,
 //Get new game
 function new_game($gid,
                   $game_count = 0,$turn = 0,$sequence = 0,$last_put = -1,$state = WAIT_TO_START,$previous_players_count = 0,
-                  $revolution = false,$amount = 0,$stack = array(),$PREVIOUS_CARDS_PUT = array(),$players = array()){
+                  $revolution = false,$amount = 0,$stack = array(),$previous_cards_put = array(),$players = array(),$chat = array()){
     return array(
         GID=>$gid,
         GAME_COUNT=>$game_count,
@@ -32,8 +32,9 @@ function new_game($gid,
         REVOLUTION=>$revolution,
         AMOUNT=>$amount,
         STACK=>$stack,
-        PREVIOUS_CARDS_PUT=>$PREVIOUS_CARDS_PUT,
-        PLAYERS=>$players
+        PREVIOUS_CARDS_PUT=>$previous_cards_put,
+        PLAYERS=>$players,
+        CHAT=>$chat
     );
 }
 
@@ -68,7 +69,7 @@ $all_cards = array(
         TYPE=>DIAMONDS,
         NUMBER=>7
     ),
-    array(
+    /*array(
         TYPE=>DIAMONDS,
         NUMBER=>8
     ),
@@ -253,5 +254,5 @@ $all_cards = array(
     array(
         TYPE=>CLUBS,
         NUMBER=>13
-    )
+    )*/
 );

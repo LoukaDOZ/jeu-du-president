@@ -271,6 +271,63 @@
     transition: all 0.1s;
 }
 
+.my-chat-box {
+    width: 30vw;
+    top: 0;
+    right: -100vw;
+    background-color: rgba(0,0,0,0.8);
+}
+
+.my-chat-box.hide {
+    width: 30vw;
+    top: 0;
+    right: -100vw;
+}
+
+.my-chat-box.hide.moving {
+    animation-name: hide-chat;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1s;
+}
+
+.my-chat-box.show {
+    top: 0;
+    right: 0;
+}
+
+.my-chat-box.show.moving {
+    animation-name: show-chat;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1s;
+}
+
+@keyframes show-chat {
+    from {
+        right: -100vw;
+    }
+
+    to {
+        right: 0;
+    }
+}
+
+@keyframes hide-chat {
+    from {
+        right: 0;
+    }
+
+    to {
+        right: -100vw;
+    }
+}
+
+.my-chat-btn {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    margin: 1px;
+}
+
 .my-w-100pc {
     width: 100%;
 }

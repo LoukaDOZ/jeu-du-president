@@ -27,7 +27,7 @@
         </div>
         <div class="container-fluid bg-white d-flex justify-content-center my-font-2-5em">
             <loadbutton if="{ props.pid === 0 }" btype="button" value="Commencer la partie !" onclicked="{ props.start }"
-            disabled="{ Object.values(props.game.players).length < 2 }" reason="Pas assez de joueurs"/>
+            disabled="{ props.game.players.length < 2 }" reason="Pas assez de joueurs"/>
             <loadbutton btype="button" value="Consulter les règles du jeu" disablespin="{ true }" onclicked="{ showRules }"/>
         </div>
         <div class="container-fluid my-overflow-y-scroll bg-primary my-font-1em">
@@ -50,7 +50,7 @@
             PREVIOUS_RANK: PREVIOUS_RANK,
             PREVIOUS_PLAYERS_COUNT: PREVIOUS_PLAYERS_COUNT,
             onBeforeActions() {
-                this.players = Object.values(this.props.game.players);
+                this.players = this.props.game.players;
                 this.players.sort(function (a,b) {
                     return (a.score - b.score) * -1;
                 });

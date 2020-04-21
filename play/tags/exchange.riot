@@ -2,7 +2,7 @@
     <div class="container-fluid m-0 p-0 my-h-full-screen overflow-hidden">
         <div class="container-fluid my-h-20pc my-overflow-y-scroll bg-primary">
             <div class="row">
-                <div class="col-sm-4 col-md-4 col-lg-3 col-xl-3" each="{ player in Object.values(props.game.players) }">
+                <div class="col-sm-4 col-md-4 col-lg-3 col-xl-3" each="{ player in props.game.players }">
                     <div class="card m-2 text-center p-2 my-font-0-8em">
                         <div if="{ player.gives || getRankName(player[PREVIOUS_RANK],props.game[PREVIOUS_PLAYERS_COUNT]) === NEUTRAL }"
                              class="position-absolute" style="cursor: default;">
@@ -90,7 +90,7 @@
             ASSHOLE: ASSHOLE,
             onBeforeActions() {
                 this.rankName = rankName(this.props.game.players[this.props.pid][PREVIOUS_RANK], this.props.game[PREVIOUS_PLAYERS_COUNT]);
-                this.ownCards = Object.values(this.props.game.players[this.props.pid].cards);
+                this.ownCards = [...this.props.game.players[this.props.pid].cards];
 
                 if(!this.toRankName){
                     switch (this.rankName) {
@@ -117,7 +117,7 @@
                     }
 
                     this.allGive = true;
-                    for (player of Object.values(this.props.game.players)) {
+                    for (player of this.props.game.players) {
                         let rName = rankName(player[PREVIOUS_RANK], this.props.game[PREVIOUS_PLAYERS_COUNT]);
                         if (rName === this.toRankName)
                             this.to = player.pid;
@@ -127,7 +127,7 @@
                     }
                 }else{
                     this.allGive = true;
-                    for (player of Object.values(this.props.game.players)) {
+                    for (player of this.props.game.players) {
                         let rName = rankName(player[PREVIOUS_RANK], this.props.game[PREVIOUS_PLAYERS_COUNT]);
                         if(!player.gives && rName !== NEUTRAL)
                             this.allGive = false;

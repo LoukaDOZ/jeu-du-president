@@ -34,7 +34,7 @@ return_message_on_cond(
 );
 
 //Adding new player
-$player = new_player($count,$player_name);
+$player = new_player($count,utf8_encode($player_name));
 array_push($game[PLAYERS],$player);
 //Saving
 set_game_value($gid,$game);
