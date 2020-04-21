@@ -3,7 +3,7 @@
 
 function open(){
     //Connect
-    $link = mysqli_connect("localhost","loukadoz_user1","Cestlouka91*","loukadoz_cards");
+    $link = mysqli_connect("localhost","login","password","cards");
     //Is connected
     return_message_on_cond(
         INTERNAL_SERVER_ERROR_CODE,
