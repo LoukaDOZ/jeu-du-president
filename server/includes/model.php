@@ -69,7 +69,7 @@ $all_cards = array(
         TYPE=>DIAMONDS,
         NUMBER=>7
     ),
-    /*array(
+    array(
         TYPE=>DIAMONDS,
         NUMBER=>8
     ),
@@ -254,5 +254,5 @@ $all_cards = array(
     array(
         TYPE=>CLUBS,
         NUMBER=>13
-    )*/
+    )
 );
