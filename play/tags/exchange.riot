@@ -17,8 +17,7 @@
             </div>
         </div>
         <div class="container-fluid m-0 p-0 my-h-30pc">
-            <div class="container-fluid m-0 p-3 d-flex align-items-center justify-content-center
-                        { rankName === NEUTRAL ? 'my-h-100pc' : 'my-h-60pc' }" style="font-size: 5vh;">
+            <div class="container-fluid m-0 p-3 d-flex align-items-center justify-content-center my-h-60pc" style="font-size: 5vh;">
                 <span class="container-fluid text-primary text-center">
                     En tant que <span class="text-lowercase">{ translate(rankName) }</span>,
                     { rankName === PRESIDENT ? 'vous devez donner 2 cartes au ' : '' }
@@ -29,8 +28,7 @@
                     <span if="{ rankName !== NEUTRAL }" class="text-lowercase">{ translate(this.toRankName) }</span>
                 </span>
             </div>
-            <div class="container-fluid m-0 p-0 d-flex align-items-center justify-content-center my-h-40pc my-font-2em"
-                 if="{ rankName !== NEUTRAL }">
+            <div class="container-fluid m-0 p-0 d-flex align-items-center justify-content-center my-h-40pc my-font-2em">
                 <loadbutton btype="button" value="Lancer la partie !" if="{ props.pid === 0 }"
                             onclicked="{ props.next }" disabled="{ !allGive }"
                             reason="Les échanges ne sont pas finis"/>
@@ -38,7 +36,8 @@
                             onclicked="{ onBeforeGive }"
                             disabled="{ props.selected.length < amount || props.game.players[props.pid].gives }"
                             reason="{ props.selected.length < amount && !props.game.players[props.pid].gives ?
-                            'Selectionnez plus de cartes' : 'Vous avez déjà donné' }"/>
+                            'Selectionnez plus de cartes' : 'Vous avez déjà donné' }"
+                            if="{ rankName !== NEUTRAL }"/>
             </div>
         </div>
         <div class="container-fluid m-0 p-0 row my-h-10pc">
