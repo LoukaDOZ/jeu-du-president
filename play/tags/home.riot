@@ -9,7 +9,7 @@
         <div class="container text-center my-font-2-2em">
             <loadbutton btype="button" value="Consulter les règles du jeu" disablespin="{ true }" onclicked="{ showRules }"/>
 
-            <form class="form-group p-0 my-font-1em" onsubmit="{ create ? props.create : props.join}">
+            <form class="form-group p-0 my-font-1em" onsubmit="{ onBeforeSubmit }">
                 <div class="col-6 offset-3 d-flex justify-content-between p-0 my-font-1em">
                     <loadbutton btype="button" value="Créer" disablespin="{ true }" onclicked="{ showCreate }"/>
                     <loadbutton btype="button" value="Rejoindre" disablespin="{ true }" onclicked="{ showJoin }"/>
@@ -31,13 +31,22 @@
     <script>
         export default {
             create: true,
+            can: true,
+            onBeforeUpdate(){
+                this.can = true;
+            },
+            onBeforeSubmit(e){
+                e.preventDefault();
+                if(this.can) {
+                    this.can = false;
+                    this.create ? this.props.create(e) : this.props.join(e);
+                }
+            },
             showCreate(e){
-                this.showError = false;
                 this.create = true;
                 this.update();
             },
             showJoin(e){
-                this.showError = false;
                 this.create = false;
                 this.update();
             },

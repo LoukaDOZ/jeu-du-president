@@ -7,6 +7,9 @@
             <div class="h5 text-primary">
                 { props.game[GAME_COUNT] < 1 ? 'Aucune' : props.game[GAME_COUNT] } { props.game[GAME_COUNT] < 2 ? 'partie jouée' : 'parties jouées' }
             </div>
+            <div class="h5 text-primary">
+                { props.game.players.length } / 8 joueurs
+            </div>
         </div>
         <div class="container-fluid bg-white pb-3" if="{ props.pid === 0 }">
             <div class="input-group d-flex justify-content-center">
@@ -50,7 +53,7 @@
             PREVIOUS_RANK: PREVIOUS_RANK,
             PREVIOUS_PLAYERS_COUNT: PREVIOUS_PLAYERS_COUNT,
             onBeforeActions() {
-                this.players = this.props.game.players;
+                this.players = Object.values(this.props.game.players);
                 this.players.sort(function (a,b) {
                     return (a.score - b.score) * -1;
                 });

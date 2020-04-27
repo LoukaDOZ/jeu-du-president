@@ -12,11 +12,13 @@
     <script>
         export default {
             spin: false,
-            onBeforeClick(e){
-                this.spin = true;
-                this.update();
-                this.spin = false;
-                this.props.onclicked(e);
+            onBeforeClick(e) {
+                if (!this.spin){
+                    this.spin = true;
+                    this.update();
+                    this.spin = false;
+                    this.props.onclicked(e);
+                }
             }
         }
     </script>

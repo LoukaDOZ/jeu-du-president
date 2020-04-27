@@ -123,28 +123,29 @@
                 let name = e.target.name.value;
                 name = name.trim();
 
-                if(!name || name.length > 10){
+                if (!name || name.length > 10) {
                     showError("Le pseudo et la clé doivent être supérieurs à 1 et inférieurs à 10 caractères");
+                    this.update();
                     return;
                 }
 
                 request(BASE_URL + "new?name=" + escape(name)).then(
-                     (response)=>{
-                         this.replaceGame(response);
-                         this.pid = this.game.players[0].pid;
-                         this.startRefresh();
-                         this.update();
+                    (response) => {
+                        this.replaceGame(response);
+                        this.pid = this.game.players[0].pid;
+                        this.startRefresh();
+                        this.update();
                     },
-                    (response)=>{
+                    (response) => {
                         decodeError(response);
                     }
                 );
             },
             start(){
                 request(BASE_URL + "start?gid=" + this.game.gid + "&pid=" + this.pid).then(
-                    (response)=>{
+                    (response) => {
                     },
-                    (response)=>{
+                    (response) => {
                         decodeError(response);
                     }
                 );
@@ -156,21 +157,22 @@
                 name = name.trim();
                 key = key.trim();
 
-                if((!name || name.length > 10) || (!key || key.length > 10)){
+                if ((!name || name.length > 10) || (!key || key.length > 10)) {
                     showError("Le pseudo et la clé doivent être supérieurs à 1 et inférieurs à 10 caractères");
+                    this.update();
                     return;
                 }
 
                 request(BASE_URL + "join?name=" + escape(name) + "&gid=" + escape(key)).then(
-                    (response)=>{
+                    (response) => {
                         this.game = {
                             "gid": key
                         };
                         this.pid = response.pid;
                         this.startRefresh();
                     },
-                    (response)=>{
-                        if(response.code === WRONG_GAME_STATE_ERR)
+                    (response) => {
+                        if (response.code === WRONG_GAME_STATE_ERR)
                             showError("Impossible de rejoindre : une partie est déjà en cours");
                         else
                             decodeError(response);
