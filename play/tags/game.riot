@@ -124,7 +124,7 @@
                 name = name.trim();
 
                 if (!name || name.length > 10) {
-                    showError("Le pseudo et la clé doivent être supérieurs à 1 et inférieurs à 10 caractères");
+                    showError("Le pseudo et la clé doivent être supérieurs à 0 et inférieurs à 10 caractères");
                     this.update();
                     return;
                 }
@@ -158,7 +158,7 @@
                 key = key.trim();
 
                 if ((!name || name.length > 10) || (!key || key.length > 10)) {
-                    showError("Le pseudo et la clé doivent être supérieurs à 1 et inférieurs à 10 caractères");
+                    showError("Le pseudo et la clé doivent être supérieurs à 0 et inférieurs à 10 caractères");
                     this.update();
                     return;
                 }
