@@ -3,12 +3,16 @@
 
 function open(){
     //Connect
-    $link = mysqli_connect("localhost","login","password","cards");
+    $link = mysqli_connect(
+        $_ENV["DB_HOST"].":".$_ENV["DB_PORT"],
+        $_ENV["DB_USER"],
+        $_ENV["DB_PASSWORD"],
+        $_ENV["DB_NAME"]);
     //Is connected
     return_message_on_cond(
         INTERNAL_SERVER_ERROR_CODE,
         DB_OPEN_ERR,
-        ((mysqli_errno($link)))
+        ((mysqli_connect_error($link)))
     );
     //Returning link
     return $link;

@@ -1,7 +1,7 @@
 //Constants
 
 //Base URL
-const BASE_URL = "../server/";
+const BASE_URL = "http://localhost:8082/";
 
 //Arrays indexes
 //Game model

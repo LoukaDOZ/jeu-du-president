@@ -1,9 +1,9 @@
-const request = function(url){
+const request = function(uri){
     return new Promise(function(resolve,reject) {
         let request = new XMLHttpRequest();
+        let url = "http://" + window.location.hostname + ":8082/" + uri
 
         request.open('GET', url);
-        request.setRequestHeader("Access-Control-Allow-Origin","*");
         request.responseType = "json";
 
         request.onload = function () {

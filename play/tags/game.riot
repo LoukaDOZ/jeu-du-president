@@ -50,7 +50,7 @@
                 this.update();
             },
             getGame(){
-                request(BASE_URL + "get?gid=" + this.game.gid).then(
+                request("get?gid=" + this.game.gid).then(
                     (response)=>{
                         if(this.hasChange(response)) {
                             this.replaceGame(response);
@@ -129,7 +129,7 @@
                     return;
                 }
 
-                request(BASE_URL + "new?name=" + escape(name)).then(
+                request("new?name=" + escape(name)).then(
                     (response) => {
                         this.replaceGame(response);
                         this.pid = this.game.players[0].pid;
@@ -142,7 +142,7 @@
                 );
             },
             start(){
-                request(BASE_URL + "start?gid=" + this.game.gid + "&pid=" + this.pid).then(
+                request("start?gid=" + this.game.gid + "&pid=" + this.pid).then(
                     (response) => {
                     },
                     (response) => {
@@ -163,7 +163,7 @@
                     return;
                 }
 
-                request(BASE_URL + "join?name=" + escape(name) + "&gid=" + escape(key)).then(
+                request("join?name=" + escape(name) + "&gid=" + escape(key)).then(
                     (response) => {
                         this.game = {
                             "gid": key
@@ -181,7 +181,7 @@
             },
             put(e){
                 e.preventDefault();
-                let url = BASE_URL + "put?gid=" + this.game.gid + "&pid=" + this.pid + "&number=" + this.selected[0].number + "&types=";
+                let url = "put?gid=" + this.game.gid + "&pid=" + this.pid + "&number=" + this.selected[0].number + "&types=";
                 for(card of this.selected)
                     url += card.type + MULTIPLE_VALUES_DELIMITER;
                 request(url.substr(0,url.length - 1)).then(
@@ -195,7 +195,7 @@
             },
             pass(e){
                 e.preventDefault();
-                request(BASE_URL + "pass?gid=" + this.game.gid + "&pid=" + this.pid).then(
+                request("pass?gid=" + this.game.gid + "&pid=" + this.pid).then(
                     (response)=>{
                     },
                     (response)=>{
@@ -205,7 +205,7 @@
             },
             fold(e){
                 e.preventDefault();
-                request(BASE_URL + "fold?gid=" + this.game.gid + "&pid=" + this.pid).then(
+                request("fold?gid=" + this.game.gid + "&pid=" + this.pid).then(
                     (response)=>{
                     },
                     (response)=>{
@@ -214,7 +214,7 @@
                 );
             },
             revolution(doRevolution){
-                request(BASE_URL + "revolution?gid=" + this.game.gid + "&pid=" + this.pid + "&do=" + doRevolution).then(
+                request("revolution?gid=" + this.game.gid + "&pid=" + this.pid + "&do=" + doRevolution).then(
                     (response)=>{
                     },
                     (response)=>{
@@ -224,7 +224,7 @@
             },
             next(e){
                 e.preventDefault();
-                request(BASE_URL + "next?gid=" + this.game.gid + "&pid=" + this.pid).then(
+                request("next?gid=" + this.game.gid + "&pid=" + this.pid).then(
                     (response)=>{
                     },
                     (response)=>{
@@ -233,7 +233,7 @@
                 );
             },
             give(to){
-                let url = BASE_URL + "give?gid=" + this.game.gid + "&pid=" + this.pid + "&to=" + to;
+                let url = "give?gid=" + this.game.gid + "&pid=" + this.pid + "&to=" + to;
                 let types = "";
                 let numbers = "";
                 for(card of this.selected) {
@@ -254,7 +254,7 @@
             send(message){
                 if(!message)
                     return;
-                request(BASE_URL + "send?gid=" + this.game.gid + "&pid=" + this.pid + "&send=" + escape(message)).then(
+                request("send?gid=" + this.game.gid + "&pid=" + this.pid + "&send=" + escape(message)).then(
                     (response)=>{
                     },
                     (response)=>{
