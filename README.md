@@ -4,13 +4,14 @@ Mutiplayer online president card game - playable in a browser. Includes a game c
 
 ## Usage
 
-| Command         | Description                |
-| --------------- | -------------------------- |
-| `make list`     | List all make instructions |
-| `make build`    | Build Docker images        |
-| `make start`    | Start Docker Compose       |
-| `make stop`     | Stop Docker Compose        |
-| `make db-clean` | Clean database data        |
+| Command         | Description                                          |
+| --------------- | ---------------------------------------------------- |
+| `make list`     | List all make instructions                           |
+| `make build`    | Build Docker images                                  |
+| `make start`    | Start Docker Compose                                 |
+| `make stop`     | Stop Docker Compose                                  |
+| `make clean`    | Clean database data (require root) and docker images |
+| `make db-clean` | Clean database data (require root)                   |
 
 Project is then accessible though : http://localhost:8080/.
 
