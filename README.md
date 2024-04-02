@@ -6,7 +6,6 @@ Mutiplayer online president card game - playable in a browser. Includes a game c
 
 | Command         | Description                                          |
 | --------------- | ---------------------------------------------------- |
-| `make list`     | List all make instructions                           |
 | `make build`    | Build Docker images                                  |
 | `make start`    | Start Docker Compose                                 |
 | `make stop`     | Stop Docker Compose                                  |
